@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Responsável</title>
+   <link rel="stylesheet" href="cad.css">
+</head>
+<body>
+    <div class="container">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+
+        <h1>CADASTRO DE RESPONSÁVEL</h1>
+
+        <div class="form">
+            <form th:action="@{/responsavel/cadastrar}" th:object="${responsavel}" method="post">
+                <label for="usuario">Usuário:</label>
+                <input type="number" id="usuario" th:field="*{usuario}" placeholder="Digite o número de usuário" required>
+                <br>
+
+                <label for="endereco">Endereço:</label>
+                <input type="text" id="endereco" th:field="*{endereco}" placeholder="Digite o endereço" required>
+                <br>
+
+                <label for="telefone">Telefone:</label>
+                <input type="tel" id="telefone" th:field="*{telefone}" placeholder="Digite o número de telefone" required>
+                <br>
+
+                <div class="btn">
+                     <button type="button" th:onclick="|window.location.href='@{/aluno}'|">Voltar</button>
+                    <button type="submit">Cadastrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

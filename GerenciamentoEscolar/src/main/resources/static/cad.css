@@ -1,0 +1,152 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      width: 100vw;
+      background-color: #FFDDB6; /* Bege de fundo igual ao wireframe */
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ======= Linhas Decorativas ======= */
+    .line {
+      position: absolute;
+      top: 0;
+      left: -100px;
+      height: 200%;
+      border-left: 4px solid orange;
+      transform: rotate(15deg);
+      opacity: 0.8;
+    }
+
+    .line:nth-child(1) { left: -150px; }
+    .line:nth-child(2) { left: -100px; }
+    .line:nth-child(3) { left: -50px; }
+
+    /* ======= Título ======= */
+    h1 {
+      font-family: 'Courier New', monospace;
+      font-size: 3rem;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 60px;
+      z-index: 1;
+      text-align: center;
+    }
+.btn {
+      display: flex;
+      gap: 20px;
+      z-index: 1;
+      width: 100%;
+      max-width: 400px;
+      padding: 0 20px;
+    }
+
+    /* ======= Botões ======= */
+    button {
+      width: 100%;
+       padding: 15px 30px;
+      background-color: orange;
+      color: black;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #ff9900;
+      transform: translateY(-3px);
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      button {
+        font-size: 1rem;
+      }
+    }
+    form{
+       font-family: Arial, sans-serif;
+       font-style: oblique;
+       display: flex;
+       flex-direction: column;
+       gap: 15px;
+    }
+    input{
+        background-color: #ff9900;
+
+    }
+    input[type="text"] {
+  width: 100%;
+  padding: 15px;     /* aumenta o espaço interno, deixando a caixa “maior” */
+  font-size: 1.1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+input[type="number"] {
+  width: 100%;
+  padding: 15px;     /* aumenta o espaço interno, deixando a caixa “maior” */
+  font-size: 1.1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+input[type="tel"] {
+  width: 100%;
+  padding: 15px;     /* aumenta o espaço interno, deixando a caixa “maior” */
+  font-size: 1.1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+textarea{
+    width: 100%;
+  padding: 15px;     /* aumenta o espaço interno, deixando a caixa “maior” */
+  font-size: 1.1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #ff9900;
+}
+input[type="date"] {
+  width: 100%;
+  padding: 15px;     /* aumenta o espaço interno, deixando a caixa “maior” */
+  font-size: 1.1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+select {
+  width: 100%;
+  padding: 15px;     /* aumenta o espaço interno, deixando a caixa “maior” */
+  font-size: 1.1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #ff9900;
+}
+input[type="password"] {
+  width: 100%;
+  padding: 15px;     /* aumenta o espaço interno, deixando a caixa “maior” */
+  font-size: 1.1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+input[type="time"] {
+  width: 100%;
+  padding: 15px;     /* aumenta o espaço interno, deixando a caixa “maior” */
+  font-size: 1.1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesquisa de Usuário</title>
+  <link rel="stylesheet" th:href="@{/cad.css}">
+</head>
+<body>
+  <div class="container">
+
+    <!-- Linhas decorativas -->
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+
+    <h1>PESQUISA DE USUÁRIO</h1>
+
+    <div class="form">
+      <!-- Formulário agora envia requisição GET ao backend -->
+      <form id="formPesquisa" th:action="@{/usuarios/pesquisar}" method="get">
+
+        <div>
+          <label for="nome">Nome:</label>
+          <input type="text" id="nome" name="nome" th:value="${param.nome}">
+        </div>
+
+        <div>
+          <label for="tipo">Tipo:</label>
+          <select id="tipo" name="tipo">
+            <option value="">-- Selecione --</option>
+            <option value="Aluno" th:selected="${param.tipo == 'Aluno'}">Aluno</option>
+            <option value="Professor" th:selected="${param.tipo == 'Professor'}">Professor</option>
+            <option value="Responsável" th:selected="${param.tipo == 'Responsável'}">Responsável</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="Usuario">Usuário:</label>
+          <textarea id="Usuario" name="Usuario" rows="5" cols="40" readonly></textarea>
+        </div>
+
+        <div class="btn">
+          <button type="submit">Pesquisar</button>
+           <button type="button" th:onclick="|window.location.href='@{/menu}'|">Voltar</button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Container para os resultados da pesquisa -->
+    <div id="resultados" th:if="${usuarios != null}">
+      <table class="resultado-table" th:if="${#lists.size(usuarios) > 0}">
+        <thead>
+          <tr><th>Nome</th><th>Tipo</th><th>Usuário</th><th>Ações</th></tr>
+        </thead>
+        <tbody>
+          <tr th:each="u : ${usuarios}">
+            <td th:text="${u.nome}"></td>
+            <td th:text="${u.tipo}"></td>
+            <td th:text="${u.usuario}"></td>
+            <td>
+              <button type="button" th:onclick="'alert(\'Nome: ' + ${u.nome} + '\nTipo: ' + ${u.tipo} + '\nUsuário: ' + ${u.usuario} + '\')'">Visualizar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p th:if="${#lists.size(usuarios) == 0}">Nenhum resultado encontrado.</p>
+    </div>
+
+  </div>
+</body>
+</html>
+

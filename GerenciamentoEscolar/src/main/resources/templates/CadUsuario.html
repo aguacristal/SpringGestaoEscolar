@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuário</title>
+   <link rel="stylesheet" th:href="@{/cad.css}">
+</head>
+<body>
+    <div class="container">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+
+        <h1>CADASTRO DE USUÁRIO</h1>
+
+        <div class="form">
+            <form th:action="@{/usuario/cadastrar}" method="post">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" required>
+
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" placeholder="Digite o nome" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Digite o email" required>
+
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" placeholder="Digite a senha" required>
+
+                <label for="tipo">Tipo:</label>
+                <select id="tipo" name="tipo" required>
+                    <option value="">Selecione</option>
+                    <option value="RESPONSAVEL">Responsável</option>
+                    <option value="ALUNO">Aluno</option>
+                    <option value="PROFESSOR">Professor</option>
+                </select>
+
+                <div class="btn">
+                    <button type="submit">Cadastrar</button>
+                    <button type="button" th:onclick="|window.location.href='@{/menu}'|">Voltar</button>
+                </div>
+
+                <!-- Mensagem de sucesso -->
+                <div th:if="${param.sucesso}">
+                    <p style="color:green;">Usuário cadastrado com sucesso!</p>
+                </div>
+
+                <!-- Mensagem de erro -->
+                <div th:if="${param.erro}">
+                    <p style="color:red;">Erro ao cadastrar. Tente novamente.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

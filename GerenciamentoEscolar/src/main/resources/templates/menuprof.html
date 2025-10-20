@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Professor</title>
+    <link rel="stylesheet" href="menu.css">
+</head>
+<body>
+    <div class="container">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+
+        <h1>ÁREA DO PROFESSOR</h1>
+
+        <div class="menu">
+            <button type="button" th:onclick="|window.location.href='@{/prof/aula}'|">Aula</button>
+            <button type="button" th:onclick="|window.location.href='@{/prof/materia}'|">Matéria</button>
+            <button type="button" th:onclick="|window.location.href='@{/prof/nota}'|">Nota</button>
+            <button type="button" th:onclick="|window.location.href='@{/prof/recuperacao}'|">Recuperação</button>
+            <button type="button" th:onclick="|window.location.href='@{/prof/professor}'|">Professor</button>
+            <button type="button" th:onclick="|window.location.href='@{/menu}'|">Voltar</button>
+        </div>
+    </div>
+</body>
+</html>

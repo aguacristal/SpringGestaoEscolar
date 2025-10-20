@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+   <link rel="stylesheet" th:href="@{/menu.css}">
+</head>
+<body>
+    <div class="container">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <h1>Gestão Escolar</h1>
+
+        <div class="menu">
+            <button type="button" th:onclick="|window.location.href='@{/aluno}'|">Aluno</button>
+            <button type="button" th:onclick="|window.location.href='@{/professor}'|">Professor</button>
+            <button type="button" th:onclick="|window.location.href='@{/usuario/cadastro}'|">Cadastro de Usuário</button>
+            <button type="button" th:onclick="|window.location.href='@{/usuario/pesquisa}'|">Pesquisar Usuário</button>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Alunos</title>
+  <link rel="stylesheet" href="cad.css">
+   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+  <div class="container">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+
+    <h1>CADASTRO DE ALUNO</h1>
+
+    <!-- Formulário -->
+    <div class="form">
+      <form id="formCadastroAluno" th:action="@{/aluno/cadastrar}" method="post">
+        <div>
+          <label for="matricula">Matrícula:</label>
+          <input type="text" id="matricula" name="matricula" placeholder="Digite a matrícula" data-validate="matricula" required>
+        </div>
+
+        <div>
+          <label for="responsavel">Responsável:</label>
+          <input type="text" id="responsavel" name="responsavel" placeholder="Digite o nome do responsável" data-validate="nome" required>
+        </div>
+
+        <div>
+          <label for="turma">Turma:</label>
+          <input type="text" id="turma" name="turma" placeholder="Digite o nome da turma" required>
+        </div>
+
+        <div class="btn">
+    <button type="button" th:onclick="|window.location.href='@{/menu}'|">Voltar</button>
+    <button type="submit">Cadastrar</button>
+    <button type="button" th:onclick="|window.location.href='@{/responsavel/cadastro}'|">Cadastrar Reponsável</button>
+    </div>
+
+        <!-- Mensagem de sucesso -->
+        <div th:if="${param.sucesso}">
+          <p style="color:green;">Aluno cadastrado com sucesso!</p>
+        </div>
+        <!-- Mensagem de erro de matrícula duplicada -->
+        <div th:if="${param.erro}">
+          <p style="color:red;">Matrícula já cadastrada!</p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const validators = {
+        required: (el) => {
+          const val = (el.value || '').trim();
+          return val.length > 0 ? null : 'Campo obrigatório';
+        },
+        matricula: (el) => {
+          const val = (el.value || '').trim();
+          if (!val) return 'Campo obrigatório';
+          if (!/^\d{4,12}$/.test(val)) return 'Matrícula deve ter 4 a 12 números';
+          return null;
+        },
+        nome: (el) => {
+          const val = (el.value || '').trim();
+          if (!val) return 'Campo obrigatório';
+          if (val.length < 3) return 'Digite um nome com pelo menos 3 caracteres';
+          return null;
+        }
+      };
+
+      function showFieldError(input, message) {
+        clearFieldError(input);
+        input.classList.add('input-error');
+        const span = document.createElement('span');
+        span.className = 'field-error-msg';
+        span.textContent = message;
+        input.parentNode.appendChild(span);
+      }
+
+      function clearFieldError(input) {
+        input.classList.remove('input-error');
+        const errorMsg = input.parentNode.querySelector('.field-error-msg');
+        if (errorMsg) errorMsg.remove();
+      }
+
+      function validateField(input) {
+        const rules = (input.getAttribute('data-validate') || '').split(' ').filter(Boolean);
+        for (let rule of rules) {
+          const fn = validators[rule];
+          if (typeof fn === 'function') {
+            const err = fn(input);
+            if (err) return err;
+          }
+        }
+        if (!rules.length && input.hasAttribute('required')) {
+          return validators.required(input);
+        }
+        return null;
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('formCadastroAluno');
+
+        form.addEventListener('input', (e) => {
+          const input = e.target;
+          if (input.matches('input, textarea, select')) {
+            clearFieldError(input);
+          }
+        });
+
+        form.addEventListener('blur', (e) => {
+          const input = e.target;
+          if (input.matches('input, textarea, select')) {
+            const err = validateField(input);
+            if (err) showFieldError(input, err);
+          }
+        }, true);
+
+        form.addEventListener('submit', (e) => {
+          const inputs = form.querySelectorAll('input, textarea, select');
+          let firstErrorEl = null;
+          let hasError = false;
+
+          inputs.forEach(input => {
+            clearFieldError(input);
+            const err = validateField(input);
+            if (err) {
+              hasError = true;
+              if (!firstErrorEl) firstErrorEl = input;
+              showFieldError(input, err);
+            }
+          });
+
+          if (hasError) {
+            e.preventDefault();
+            firstErrorEl.focus();
+          }
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>
