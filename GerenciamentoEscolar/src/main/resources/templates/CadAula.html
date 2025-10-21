@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Aula</title>
+  <link rel="stylesheet" href="/cad.css">
+  <link rel="stylesheet" th:href="@{/cad.css}">
+</head>
+<body>
+  <div class="container">
+
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+
+    <h1>CADASTRO DE AULA</h1>
+
+    <div class="form">
+      <form th:action="@{/aulas/salvar}" method="post" th:object="${aula}">
+        <label for="data">Data:</label>
+        <input type="date" id="data" th:field="*{data}" required>
+
+        <label for="inicio">Hora início:</label>
+        <input type="time" id="inicio" th:field="*{horaInicio}" required>
+
+        <label for="fim">Hora fim:</label>
+        <input type="time" id="fim" th:field="*{horaFim}" required>
+
+        <label for="materia">Matéria:</label>
+        <input type="text" id="materia" th:field="*{materia}" placeholder="Digite a matéria" required>
+
+        <label for="prof">Professor:</label>
+        <input type="text" id="prof" th:field="*{professor}" placeholder="Digite o nome do professor" required>
+
+        <br>
+        <div class="btn">
+          <button type="submit">Cadastrar</button>
+          <button type="button" th:onclick="|window.location.href='@{/professor}'|">Voltar</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</body>
+</html>

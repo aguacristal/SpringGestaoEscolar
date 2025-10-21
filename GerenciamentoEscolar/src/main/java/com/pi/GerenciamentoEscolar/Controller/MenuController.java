@@ -1,9 +1,11 @@
 package com.pi.GerenciamentoEscolar.Controller;
 
 import com.pi.GerenciamentoEscolar.Model.Aluno;
+import com.pi.GerenciamentoEscolar.Model.Aula;
 import com.pi.GerenciamentoEscolar.Model.Responsavel;
 import com.pi.GerenciamentoEscolar.Model.Usuario;
 import com.pi.GerenciamentoEscolar.Repository.AlunoRepository;
+import com.pi.GerenciamentoEscolar.Repository.AulaRepository;
 import com.pi.GerenciamentoEscolar.Repository.ResponsavelRepository;
 import com.pi.GerenciamentoEscolar.Repository.UsuarioRepository;
 import java.time.LocalDate;
@@ -24,6 +26,7 @@ public class MenuController {
     private AlunoRepository alunoRepository;
     private ResponsavelRepository responsavelRepository;
     private UsuarioRepository usuarioRepository;
+    private AulaRepository aulaRepository;
 
     @GetMapping("/menu")
     public String exibirMenu() {
@@ -131,6 +134,17 @@ public class MenuController {
         }
 
         model.addAttribute("resultados", resultados);
-        return "pesquisaUsuario";
+        return "PesUsu";
+    }
+    @GetMapping("/aulas/cadastrar")
+    public String exibirFormulario(Model model) {
+        model.addAttribute("aula", new Aula());
+        return "CadAula"; // nome do arquivo HTML
+    }
+
+    @PostMapping("/aulas/salvar")
+    public String salvar(Aula aula) {
+        aulaRepository.save(aula);
+        return "redirect:/professor"; // redireciona após salvar
     }
 }
