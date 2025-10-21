@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Nota</title>
+  <link rel="stylesheet" th:href="@{/cad.css}">
+</head>
+<body>
+  <div class="container">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+
+    <h1>CADASTRO DE NOTA</h1>
+
+    <div class="form">
+      <form th:action="@{/nota/cadastrar}" th:object="${nota}" method="post">
+        <label for="aluno">Aluno:</label>
+        <input type="text" id="aluno" th:field="*{aluno}" placeholder="Nome do aluno" required>
+
+        <label for="data">Data:</label>
+        <input type="date" id="data" th:field="*{data}" required>
+
+        <label for="materia">Matéria:</label>
+        <input type="text" id="materia" th:field="*{materia}" placeholder="Matéria" required>
+
+        <label for="nota">Nota:</label>
+        <input type="number" id="nota" th:field="*{nota}" step="0.1" min="0" max="10" required>
+
+        <div class="btn">
+          <button type="submit">Cadastrar</button>
+                   <button type="button" th:onclick="|window.location.href='@{/professor}'|">Voltar</button>
+                   <button type="button" th:onclick="|window.location.href='@{/nota/pesquisar}'|">Pesquisar</button>
+        </div>
+      </form>
+
+      <div th:if="${mensagemSucesso}">
+        <p style="color:green;" th:text="${mensagemSucesso}"></p>
+      </div>
+      <div th:if="${mensagemErro}">
+        <p style="color:red;" th:text="${mensagemErro}"></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

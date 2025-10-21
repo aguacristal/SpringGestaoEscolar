@@ -3,46 +3,53 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.pi.GerenciamentoEscolar.Model;
-import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
+
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "notas")
 public class Nota {
-    private int id;
-    private int alunoId;
-    private int materiaId;
-    private double nota;
-    private LocalDateTime lancamento;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String aluno;
+
+    @Column(nullable = false)
+    private LocalDate data;
+
+    @Column(nullable = false)
+    private String materia;
+
+    @Column(nullable = false)
+    private Double nota;
 
     public Nota() {}
 
-    public Nota(int id, int alunoId, int materiaId, double nota) {
-        this.id = id;
-        this.alunoId = alunoId;
-        this.materiaId = materiaId;
+    public Nota(String aluno, LocalDate data, String materia, Double nota) {
+        this.aluno = aluno;
+        this.data = data;
+        this.materia = materia;
         this.nota = nota;
-        this.lancamento = LocalDateTime.now();
     }
 
-    public Nota(int alunoId, int materiaId, double nota, LocalDateTime lancamento) {
-        this.alunoId = alunoId; this.materiaId = materiaId; this.nota = nota; this.lancamento = lancamento;
-    }
+    // Getters e setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public String getAluno() { return aluno; }
+    public void setAluno(String aluno) { this.aluno = aluno; }
 
-    public int getAlunoId() { return alunoId; }
-    public void setAlunoId(int alunoId) { this.alunoId = alunoId; }
+    public LocalDate getData() { return data; }
+    public void setData(LocalDate data) { this.data = data; }
 
-    public int getMateriaId() { return materiaId; }
-    public void setMateriaId(int materiaId) { this.materiaId = materiaId; }
+    public String getMateria() { return materia; }
+    public void setMateria(String materia) { this.materia = materia; }
 
-    public double getNota() { return nota; }
-    public void setNota(double nota) { this.nota = nota; }
-
-    public LocalDateTime getLancamento() { return lancamento; }
-    public void setLancamento(LocalDateTime lancamento) { this.lancamento = lancamento; }
-
-    @Override
-    public String toString() {
-        return "Nota{" + "alunoId=" + alunoId + ", materiaId=" + materiaId + ", nota=" + nota + ", lancamento=" + lancamento + '}';
-    }
+    public Double getNota() { return nota; }
+    public void setNota(Double nota) { this.nota = nota; }
 }

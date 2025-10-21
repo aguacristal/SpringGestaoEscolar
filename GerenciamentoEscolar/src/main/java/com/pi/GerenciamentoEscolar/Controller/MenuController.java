@@ -3,11 +3,13 @@ package com.pi.GerenciamentoEscolar.Controller;
 import com.pi.GerenciamentoEscolar.Model.Aluno;
 import com.pi.GerenciamentoEscolar.Model.Aula;
 import com.pi.GerenciamentoEscolar.Model.Materia;
+import com.pi.GerenciamentoEscolar.Model.Nota;
 import com.pi.GerenciamentoEscolar.Model.Responsavel;
 import com.pi.GerenciamentoEscolar.Model.Usuario;
 import com.pi.GerenciamentoEscolar.Repository.AlunoRepository;
 import com.pi.GerenciamentoEscolar.Repository.AulaRepository;
 import com.pi.GerenciamentoEscolar.Repository.MateriaRepository;
+import com.pi.GerenciamentoEscolar.Repository.NotaRepository;
 import com.pi.GerenciamentoEscolar.Repository.ResponsavelRepository;
 import com.pi.GerenciamentoEscolar.Repository.UsuarioRepository;
 import java.time.LocalDate;
@@ -26,11 +28,23 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class MenuController {
 
     @Autowired
-    private AlunoRepository alunoRepository;
-    private ResponsavelRepository responsavelRepository;
-    private UsuarioRepository usuarioRepository;
-    private AulaRepository aulaRepository;
-    private MateriaRepository materiaRepository;
+private ResponsavelRepository responsavelRepository;
+
+@Autowired
+private UsuarioRepository usuarioRepository;
+
+@Autowired
+private AulaRepository aulaRepository;
+
+@Autowired
+private MateriaRepository materiaRepository;
+
+@Autowired
+private NotaRepository notaRepository;
+
+@Autowired
+private AlunoRepository alunoRepository;
+
 
     @GetMapping("/menu")
     public String exibirMenu() {
@@ -188,4 +202,47 @@ public class MenuController {
             return "redirect:/materia/cadastro";
         }
     }
+    @GetMapping("/nota/cadastro")
+    public String mostrarFormularioNota(Model model,
+                                   @RequestParam(required = false) String sucesso,
+                                   @RequestParam(required = false) String erro) {
+        if (!model.containsAttribute("nota")) {
+            model.addAttribute("nota", new Nota());
+        }
+        if (sucesso != null) model.addAttribute("mensagemSucesso", "Nota cadastrada com sucesso!");
+        if (erro != null) model.addAttribute("mensagemErro", "Erro ao cadastrar nota. Verifique os dados.");
+        return "CadNota";
+    }
+
+    // Salvar nota
+    @PostMapping("/nota/cadastrar")
+    public String cadastrarNota(@ModelAttribute Nota nota, RedirectAttributes redirectAttributes) {
+        try {
+            if (nota.getAluno() == null || nota.getAluno().trim().isEmpty() || nota.getNota() == null) {
+                redirectAttributes.addAttribute("erro", "true");
+                return "redirect:/nota/cadastro";
+            }
+
+            notaRepository.save(nota);
+            redirectAttributes.addAttribute("sucesso", "true");
+            return "redirect:/nota/cadastro";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addAttribute("erro", "true");
+            return "redirect:/nota/cadastro";
+        }
+    }
+
+    // Página de pesquisa de notas
+    @GetMapping("/nota/pesquisar")
+public String pesquisarNotas(@RequestParam(required = false) String aluno, Model model) {
+    List<Nota> notas;
+    if (aluno != null && !aluno.isEmpty()) {
+        notas = notaRepository.findByAlunoContainingIgnoreCase(aluno);
+    } else {
+        notas = notaRepository.findAll();
+    }
+    model.addAttribute("notas", notas);
+    return "PesNota";
+}
 }

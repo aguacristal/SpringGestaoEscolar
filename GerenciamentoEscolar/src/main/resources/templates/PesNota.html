@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesquisa de Nota</title>
+   <link rel="stylesheet" th:href="@{/cad.css}">
+
+</head>
+<body>
+  <div class="container">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+
+    <h1>PESQUISA DE NOTA</h1>
+
+    <div class="form">
+      <!-- Formulário de pesquisa -->
+      <form th:action="@{/nota/pesquisar}" method="get">
+        <label for="nome">Nome do aluno:</label>
+        <input type="text" id="nome" name="aluno" placeholder="Digite o nome do aluno">
+
+        <div class="btn">
+          <button type="submit">Pesquisar</button>
+          <button type="button" th:onclick="|window.location.href='@{/professor}'|">Voltar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Exibição dos resultados -->
+    <div class="resultados" th:if="${notas}">
+      <h2 th:if="${#lists.isEmpty(notas)}">Nenhum resultado encontrado.</h2>
+
+      <table th:if="${!#lists.isEmpty(notas)}" class="resultado-table">
+        <thead>
+          <tr>
+            <th>Aluno</th>
+            <th>Data</th>
+            <th>Matéria</th>
+            <th>Nota</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="n : ${notas}">
+            <td th:text="${n.aluno}"></td>
+            <td th:text="${#temporals.format(n.data, 'dd/MM/yyyy')}"></td>
+            <td th:text="${n.materia}"></td>
+            <td th:text="${n.nota}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
