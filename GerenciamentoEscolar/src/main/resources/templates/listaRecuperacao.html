@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Recuperações</title>
+    <link rel="stylesheet" th:href="@{/cad.css}">
+</head>
+<body>
+<h1>Lista de Recuperações</h1>
+
+<form th:action="@{/recuperacao/buscar}" method="get">
+    <input type="text" name="aluno" placeholder="Buscar por aluno">
+    <button type="submit">Buscar</button>
+</form>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th><th>Aluno</th><th>Matéria</th><th>Nota</th><th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="r : ${recuperacoes}">
+            <td th:text="${r.id}"></td>
+            <td th:text="${r.aluno}"></td>
+            <td th:text="${r.materia}"></td>
+            <td th:text="${r.nota}"></td>
+            <td th:text="${r.data}"></td>
+        </tr>
+    </tbody>
+</table>
+
+<br>
+<button onclick="window.location.href='/recuperacao/nova'">Nova Recuperação</button>
+</body>
+</html>

@@ -4,12 +4,14 @@ import com.pi.GerenciamentoEscolar.Model.Aluno;
 import com.pi.GerenciamentoEscolar.Model.Aula;
 import com.pi.GerenciamentoEscolar.Model.Materia;
 import com.pi.GerenciamentoEscolar.Model.Nota;
+import com.pi.GerenciamentoEscolar.Model.Recuperacao;
 import com.pi.GerenciamentoEscolar.Model.Responsavel;
 import com.pi.GerenciamentoEscolar.Model.Usuario;
 import com.pi.GerenciamentoEscolar.Repository.AlunoRepository;
 import com.pi.GerenciamentoEscolar.Repository.AulaRepository;
 import com.pi.GerenciamentoEscolar.Repository.MateriaRepository;
 import com.pi.GerenciamentoEscolar.Repository.NotaRepository;
+import com.pi.GerenciamentoEscolar.Repository.RecuperacaoRepository;
 import com.pi.GerenciamentoEscolar.Repository.ResponsavelRepository;
 import com.pi.GerenciamentoEscolar.Repository.UsuarioRepository;
 import java.time.LocalDate;
@@ -44,6 +46,9 @@ private NotaRepository notaRepository;
 
 @Autowired
 private AlunoRepository alunoRepository;
+
+@Autowired
+private RecuperacaoRepository recuperacaoRepository;
 
 
     @GetMapping("/menu")
@@ -245,4 +250,28 @@ public String pesquisarNotas(@RequestParam(required = false) String aluno, Model
     model.addAttribute("notas", notas);
     return "PesNota";
 }
+@GetMapping("/recuperacao/nova")
+    public String novaRecuperacao(Model model) {
+        model.addAttribute("recuperacao", new Recuperacao());
+        return "CadRec";
+    }
+
+    @PostMapping("/salvar")
+    public String salvarRecuperacao(@ModelAttribute Recuperacao recuperacao) {
+        recuperacaoRepository.save(recuperacao);
+        return "redirect:/recuperacao/listar";
+    }
+
+    @GetMapping("/recuperacao/listar")
+    public String listarRecuperacoes(Model model) {
+        model.addAttribute("recuperacoes", recuperacaoRepository.findAll());
+        return "listaRecuperacao";
+    }
+
+    @GetMapping("/recuperacao/buscar")
+    public String buscarPorAluno(@RequestParam("aluno") String aluno, Model model) {
+        model.addAttribute("recuperacoes", recuperacaoRepository.findByAlunoContainingIgnoreCase(aluno));
+        return "listaRecuperacao";
+    }
 }
+
