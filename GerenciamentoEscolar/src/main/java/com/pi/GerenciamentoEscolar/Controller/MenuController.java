@@ -4,6 +4,7 @@ import com.pi.GerenciamentoEscolar.Model.Aluno;
 import com.pi.GerenciamentoEscolar.Model.Aula;
 import com.pi.GerenciamentoEscolar.Model.Materia;
 import com.pi.GerenciamentoEscolar.Model.Nota;
+import com.pi.GerenciamentoEscolar.Model.Professor;
 import com.pi.GerenciamentoEscolar.Model.Recuperacao;
 import com.pi.GerenciamentoEscolar.Model.Responsavel;
 import com.pi.GerenciamentoEscolar.Model.Usuario;
@@ -11,6 +12,7 @@ import com.pi.GerenciamentoEscolar.Repository.AlunoRepository;
 import com.pi.GerenciamentoEscolar.Repository.AulaRepository;
 import com.pi.GerenciamentoEscolar.Repository.MateriaRepository;
 import com.pi.GerenciamentoEscolar.Repository.NotaRepository;
+import com.pi.GerenciamentoEscolar.Repository.ProfessorRepository;
 import com.pi.GerenciamentoEscolar.Repository.RecuperacaoRepository;
 import com.pi.GerenciamentoEscolar.Repository.ResponsavelRepository;
 import com.pi.GerenciamentoEscolar.Repository.UsuarioRepository;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -49,6 +52,9 @@ private AlunoRepository alunoRepository;
 
 @Autowired
 private RecuperacaoRepository recuperacaoRepository;
+
+@Autowired
+private ProfessorRepository professorRepository;
 
 
     @GetMapping("/menu")
@@ -272,6 +278,35 @@ public String pesquisarNotas(@RequestParam(required = false) String aluno, Model
     public String buscarPorAluno(@RequestParam("aluno") String aluno, Model model) {
         model.addAttribute("recuperacoes", recuperacaoRepository.findByAlunoContainingIgnoreCase(aluno));
         return "listaRecuperacao";
+    }
+     @GetMapping("professor/novo")
+    public String novoProfessor(Model model) {
+        model.addAttribute("professor", new Professor());
+        return "CadProf";
+    }
+
+    @PostMapping("professor/salvar")
+    public String salvarProfessor(@ModelAttribute Professor professor) {
+        professorRepository.save(professor);
+        return "redirect:/professor/listar";
+    }
+
+    @GetMapping("professor/listar")
+    public String listarProfessores(Model model) {
+        model.addAttribute("professores", professorRepository.findAll());
+        return "listaProfessor";
+    }
+
+    @GetMapping("professor/buscar")
+    public String buscarPorMateria(@RequestParam("materia") String materia, Model model) {
+        model.addAttribute("professores", professorRepository.findByMateriaContainingIgnoreCase(materia));
+        return "listaProfessor";
+    }
+
+    @GetMapping("professor/excluir/{id}")
+    public String excluirProfessor(@PathVariable Long id) {
+        professorRepository.deleteById(id);
+        return "redirect:/professor/listar";
     }
 }
 

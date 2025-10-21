@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Professores</title>
+    <link rel="stylesheet" th:href="@{/cad.css}">
+</head>
+<body>
+<h1>Lista de Professores</h1>
+
+<form th:action="@{/professor/buscar}" method="get">
+    <input type="text" name="materia" placeholder="Buscar por matéria">
+    <button type="submit">Buscar</button>
+</form>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuário</th>
+            <th>Matéria</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="p : ${professores}">
+            <td th:text="${p.id}"></td>
+            <td th:text="${p.usuario}"></td>
+            <td th:text="${p.materia}"></td>
+            <td>
+                <a th:href="@{'/professor/excluir/' + ${p.id}}">Excluir</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<br>
+<button th:onclick="|window.location.href='@{/professor/novo'}|">Novo Professor</button>
+</body>
+</html>
