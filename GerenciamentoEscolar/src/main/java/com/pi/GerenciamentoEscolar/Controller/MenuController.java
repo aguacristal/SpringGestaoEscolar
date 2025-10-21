@@ -2,10 +2,12 @@ package com.pi.GerenciamentoEscolar.Controller;
 
 import com.pi.GerenciamentoEscolar.Model.Aluno;
 import com.pi.GerenciamentoEscolar.Model.Aula;
+import com.pi.GerenciamentoEscolar.Model.Materia;
 import com.pi.GerenciamentoEscolar.Model.Responsavel;
 import com.pi.GerenciamentoEscolar.Model.Usuario;
 import com.pi.GerenciamentoEscolar.Repository.AlunoRepository;
 import com.pi.GerenciamentoEscolar.Repository.AulaRepository;
+import com.pi.GerenciamentoEscolar.Repository.MateriaRepository;
 import com.pi.GerenciamentoEscolar.Repository.ResponsavelRepository;
 import com.pi.GerenciamentoEscolar.Repository.UsuarioRepository;
 import java.time.LocalDate;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -27,6 +30,7 @@ public class MenuController {
     private ResponsavelRepository responsavelRepository;
     private UsuarioRepository usuarioRepository;
     private AulaRepository aulaRepository;
+    private MateriaRepository materiaRepository;
 
     @GetMapping("/menu")
     public String exibirMenu() {
@@ -146,5 +150,42 @@ public class MenuController {
     public String salvar(Aula aula) {
         aulaRepository.save(aula);
         return "redirect:/professor"; // redireciona após salvar
+    }
+     @GetMapping("/materia/cadastro")
+    public String mostrarFormulario(Model model,
+                                   @RequestParam(required = false) String sucesso,
+                                   @RequestParam(required = false) String erro) {
+        if (!model.containsAttribute("materia")) {
+            model.addAttribute("materia", new Materia());
+        }
+        if (sucesso != null) model.addAttribute("mensagemSucesso", "Matéria cadastrada com sucesso!");
+        if (erro != null) model.addAttribute("mensagemErro", "Erro: matéria já cadastrada ou dados inválidos.");
+        return "CadMateria"; // templates/CadMateria.html
+    }
+
+    // Salva a matéria
+    @PostMapping("/materia/cadastrar")
+    public String cadastrarMateria(@ModelAttribute Materia materia, RedirectAttributes redirectAttributes) {
+        try {
+            String nome = (materia.getNome() == null) ? "" : materia.getNome().trim();
+            if (nome.isEmpty()) {
+                redirectAttributes.addAttribute("erro", "true");
+                return "redirect:/materia/cadastro";
+            }
+
+            if (materiaRepository.existsByNome(nome)) {
+                redirectAttributes.addAttribute("erro", "true");
+                return "redirect:/materia/cadastro";
+            }
+
+            materia.setNome(nome);
+            materiaRepository.save(materia);
+            redirectAttributes.addAttribute("sucesso", "true");
+            return "redirect:/materia/cadastro";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addAttribute("erro", "true");
+            return "redirect:/materia/cadastro";
+        }
     }
 }

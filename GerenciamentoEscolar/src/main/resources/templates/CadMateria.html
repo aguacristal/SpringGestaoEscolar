@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Matéria</title>
+  <link rel="stylesheet" th:href="@{/cad.css}">
+</head>
+<body>
+  <div class="container">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+
+    <h1>CADASTRO DE MATÉRIA</h1>
+
+    <div class="form">
+      <form th:action="@{/materia/cadastrar}" th:object="${materia}" method="post">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" th:field="*{nome}" placeholder="Nome da matéria" required>
+
+        <label for="descricao">Descrição:</label>
+        <textarea id="descricao" th:field="*{descricao}" rows="5" cols="40" placeholder="Descrição da matéria"></textarea>
+
+        <div class="btn">
+          <button type="button" th:onclick="|window.location.href='@{/professor}'|">Voltar</button>
+          <button type="submit">Cadastrar</button>
+        </div>
+      </form>
+
+      <div th:if="${mensagemSucesso}">
+        <p style="color:green;" th:text="${mensagemSucesso}"></p>
+      </div>
+      <div th:if="${mensagemErro}">
+        <p style="color:red;" th:text="${mensagemErro}"></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
