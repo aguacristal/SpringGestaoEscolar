@@ -13,11 +13,13 @@
     <div class="line"></div>
 
     <h1>CADASTRO DE NOTA</h1>
-
     <div class="form">
-      <form th:action="@{/nota/cadastrar}" th:object="${nota}" method="post">
-        <label for="aluno">Aluno:</label>
-        <input type="text" id="aluno" th:field="*{aluno}" placeholder="Nome do aluno" required>
+    <form th:action="@{/nota/cadastrar}" th:object="${nota}" method="post">
+     <label for="aluno">Aluno:</label>
+<select id="aluno" th:field="*{aluno}" required> 
+  <option value="">Selecione um aluno</option>
+    <option th:each="a : ${alunos}" th:value="${a.id}" th:text="${a.usuario.nome}"></option>
+</select>
 
         <label for="data">Data:</label>
         <input type="date" id="data" th:field="*{data}" required>
@@ -36,11 +38,11 @@
       </form>
 
       <div th:if="${mensagemSucesso}">
-        <p style="color:green;" th:text="${mensagemSucesso}"></p>
-      </div>
-      <div th:if="${mensagemErro}">
-        <p style="color:red;" th:text="${mensagemErro}"></p>
-      </div>
+      <p style="color:green;" th:text="${mensagemSucesso}"></p>
+  </div>
+  <div th:if="${mensagemErro}">
+      <p style="color:red;" th:text="${mensagemErro}"></p>
+  </div>
     </div>
   </div>
 </body>

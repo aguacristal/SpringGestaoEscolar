@@ -10,5 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RecuperacaoRepository extends JpaRepository<Recuperacao, Long> {
-    List<Recuperacao> findByAlunoContainingIgnoreCase(String aluno);
+    List<Recuperacao> findByAluno_Usuario_NomeContainingIgnoreCase(String nome); 
 }

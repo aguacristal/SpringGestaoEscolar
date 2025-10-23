@@ -63,26 +63,33 @@ private ProfessorRepository professorRepository;
     }
 
     @GetMapping("/aluno")
-    public String exibirFormularioAluno(Model model) {
-        return "CadAluno"; // templates/CadAluno.html
-    }
+public String exibirFormularioAluno(Model model) {
+   model.addAttribute("aluno", new Aluno()); 
+   List<Usuario> usuariosAluno = usuarioRepository.findByTipo("ALUNO");
+   model.addAttribute("usuariosAluno", usuariosAluno); 
+    return "CadAluno";
+}
 
     @PostMapping("/aluno/cadastrar")
-    public String cadastrarAluno(
-            @RequestParam String matricula,
-            @RequestParam String responsavel,
-            @RequestParam String turma
-    ) {
-        // Verifica matrícula duplicada
-        if (alunoRepository.existsByMatricula(matricula)) {
-            return "redirect:/aluno?erro=matricula";
-        }
-
-        Aluno aluno = new Aluno(matricula, responsavel, turma);
-        alunoRepository.save(aluno);
-
-        return "redirect:/aluno?sucesso";
+public String cadastrarAluno(@ModelAttribute Aluno aluno, RedirectAttributes redirectAttributes) {
+    Usuario usuario = aluno.getUsuario();
+    
+    if (usuario == null || usuario.getId() == null) {
+        redirectAttributes.addFlashAttribute("erro", "Usuário inválido");
+        return "redirect:/aluno";
     }
+    
+    Usuario usuarioBanco = usuarioRepository.findById(aluno.getUsuario().getId()).orElse(null);
+    if (usuarioBanco == null || !"Aluno".equalsIgnoreCase(usuarioBanco.getTipo())) {
+        redirectAttributes.addFlashAttribute("erro", "usuario_invalido");
+        return "redirect:/aluno";
+    }
+    aluno.setUsuario(usuarioBanco);
+    alunoRepository.save(aluno);
+
+    redirectAttributes.addAttribute("sucesso", true);
+    return "redirect:/aluno";
+}
      @GetMapping("/responsavel/cadastro")
     public String mostrarFormulario(Model model) {
         model.addAttribute("responsavel", new Responsavel());
@@ -139,7 +146,7 @@ private ProfessorRepository professorRepository;
         }
     }
      @GetMapping("/usuario/pesquisa")
-    public String mostrarFormulario() {
+    public String exibirPaginaPesquisa() {
         return "PesUsu";
     }
 
@@ -213,43 +220,72 @@ private ProfessorRepository professorRepository;
             return "redirect:/materia/cadastro";
         }
     }
-    @GetMapping("/nota/cadastro")
-    public String mostrarFormularioNota(Model model,
-                                   @RequestParam(required = false) String sucesso,
-                                   @RequestParam(required = false) String erro) {
-        if (!model.containsAttribute("nota")) {
-            model.addAttribute("nota", new Nota());
-        }
-        if (sucesso != null) model.addAttribute("mensagemSucesso", "Nota cadastrada com sucesso!");
-        if (erro != null) model.addAttribute("mensagemErro", "Erro ao cadastrar nota. Verifique os dados.");
-        return "CadNota";
-    }
+ @GetMapping("/nota/cadastro")
+public String mostrarFormularioNota(Model model) {
+    model.addAttribute("nota", new Nota());
+    // Assume que 'usuarioRepository' é injetado.
+    // Busque todos os USUARIOS que são do TIPO "Aluno"
+    model.addAttribute("alunos", alunoRepository.findByUsuario_Tipo("ALUNO")); 
+    // ou "Aluno", dependendo de como você salvou o tipo
+    
+    return "CadNota";
+}
+// NO MenuController.java
 
-    // Salvar nota
-    @PostMapping("/nota/cadastrar")
-    public String cadastrarNota(@ModelAttribute Nota nota, RedirectAttributes redirectAttributes) {
+@PostMapping("/nota/cadastrar")
+public String cadastrarNota(
+    @RequestParam("aluno") Long alunoId,
+    @RequestParam("nota") String notaStr,
+    String materia, 
+    RedirectAttributes redirectAttributes
+) {
+    try {
+        Aluno aluno = alunoRepository.findById(alunoId).orElse(null);
+        
+        // 1. Verificação de Aluno e Nota (ANTES de processar)
+        if (aluno == null || notaStr == null || notaStr.isEmpty()) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro: Aluno ou nota inválidos.");
+            return "redirect:/nota/cadastro";
+        }
+
+        Double valor;
         try {
-            if (nota.getAluno() == null || nota.getAluno().trim().isEmpty() || nota.getNota() == null) {
-                redirectAttributes.addAttribute("erro", "true");
-                return "redirect:/nota/cadastro";
-            }
-
-            notaRepository.save(nota);
-            redirectAttributes.addAttribute("sucesso", "true");
-            return "redirect:/nota/cadastro";
-        } catch (Exception e) {
-            e.printStackTrace();
-            redirectAttributes.addAttribute("erro", "true");
+            valor = Double.parseDouble(notaStr.replace(",", "."));
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro: nota inválida.");
             return "redirect:/nota/cadastro";
         }
+
+        // 2. Cria e Salva a Nota
+        Nota nota = new Nota();
+        nota.setAluno(aluno); // Aqui você associa o objeto Aluno completo
+        nota.setNota(valor);
+        nota.setData(LocalDate.now());
+        nota.setMateria(materia);
+        
+        notaRepository.save(nota);
+        redirectAttributes.addFlashAttribute("mensagemSucesso", "Nota cadastrada com sucesso!");
+        return "redirect:/nota/cadastro";
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao cadastrar nota.");
+
+        return "redirect:/nota/cadastro";
+
     }
+        
+    
+}
 
     // Página de pesquisa de notas
-    @GetMapping("/nota/pesquisar")
+ @GetMapping("/nota/pesquisar")
 public String pesquisarNotas(@RequestParam(required = false) String aluno, Model model) {
     List<Nota> notas;
     if (aluno != null && !aluno.isEmpty()) {
-        notas = notaRepository.findByAlunoContainingIgnoreCase(aluno);
+        // Mude para o novo método
+        notas = notaRepository.findByAluno_Usuario_NomeContainingIgnoreCase(aluno);
     } else {
         notas = notaRepository.findAll();
     }
@@ -259,13 +295,57 @@ public String pesquisarNotas(@RequestParam(required = false) String aluno, Model
 @GetMapping("/recuperacao/nova")
     public String novaRecuperacao(Model model) {
         model.addAttribute("recuperacao", new Recuperacao());
+    // Assume que 'usuarioRepository' é injetado.
+    // Busque todos os USUARIOS que são do TIPO "Aluno"
+    model.addAttribute("alunos", alunoRepository.findByUsuario_Tipo("ALUNO")); 
+    // ou "Aluno", dependendo de como você salvou o tipo
+    
         return "CadRec";
     }
 
-    @PostMapping("/salvar")
-    public String salvarRecuperacao(@ModelAttribute Recuperacao recuperacao) {
+    @PostMapping("recuperacao/salvar")
+    public String salvarRecuperacao(
+    @RequestParam("aluno") Long alunoId,
+    @RequestParam("nota") String notaStr,
+    String materia, 
+    RedirectAttributes redirectAttributes
+) {
+    try {
+        Aluno aluno = alunoRepository.findById(alunoId).orElse(null);
+        
+        // 1. Verificação de Aluno e Nota (ANTES de processar)
+        if (aluno == null || notaStr == null || notaStr.isEmpty()) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro: Aluno ou nota inválidos.");
+            return "redirect:/recuperacao/nova";
+        }
+
+        Double valor;
+        try {
+            valor = Double.parseDouble(notaStr.replace(",", "."));
+        } catch (NumberFormatException e) {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro: nota inválida.");
+            return "redirect:/recuperacao/nova";
+        }
+
+        // 2. Cria e Salva a Nota
+        Recuperacao recuperacao = new Recuperacao();
+        recuperacao.setAluno(aluno); // Aqui você associa o objeto Aluno completo
+        recuperacao.setNota(valor);
+        recuperacao.setData(LocalDate.now());
+        recuperacao.setMateria(materia);
+        
         recuperacaoRepository.save(recuperacao);
-        return "redirect:/recuperacao/listar";
+        redirectAttributes.addFlashAttribute("mensagemSucesso", "Nota cadastrada com sucesso!");
+        return "redirect:/recuperacao/nova";
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao cadastrar nota.");
+
+        return "redirect:/recuperacao/nova";
+
+    }
     }
 
     @GetMapping("/recuperacao/listar")
@@ -276,20 +356,43 @@ public String pesquisarNotas(@RequestParam(required = false) String aluno, Model
 
     @GetMapping("/recuperacao/buscar")
     public String buscarPorAluno(@RequestParam("aluno") String aluno, Model model) {
-        model.addAttribute("recuperacoes", recuperacaoRepository.findByAlunoContainingIgnoreCase(aluno));
+        model.addAttribute("recuperacoes", recuperacaoRepository.findByAluno_Usuario_NomeContainingIgnoreCase(aluno));
         return "listaRecuperacao";
     }
-     @GetMapping("professor/novo")
-    public String novoProfessor(Model model) {
-        model.addAttribute("professor", new Professor());
-        return "CadProf";
-    }
+    @GetMapping("professor/novo")
+public String novoProfessor(Model model) {
+    model.addAttribute("professor", new Professor());
+    // Busca apenas usuários cadastrados como Professor
+    List<Usuario> usuariosProfessores = usuarioRepository.findByTipo("Professor");
+    model.addAttribute("usuariosProfessores", usuariosProfessores);
+    return "CadProf";
+}
 
     @PostMapping("professor/salvar")
-    public String salvarProfessor(@ModelAttribute Professor professor) {
-        professorRepository.save(professor);
-        return "redirect:/professor/listar";
+public String salvarProfessor(@ModelAttribute Professor professor, RedirectAttributes redirectAttributes) {
+    // Obtém o usuário selecionado
+    Usuario usuario = professor.getUsuario();
+
+    // Verifica se o usuário é válido e do tipo correto
+    if (usuario == null || usuario.getId() == null) {
+        redirectAttributes.addFlashAttribute("erro", "Usuário inválido.");
+        return "redirect:/professor/novo";
     }
+
+    // Busca o usuário completo do banco
+    Usuario usuarioBanco = usuarioRepository.findById(professor.getUsuario().getId()).orElse(null);
+
+    if (usuarioBanco == null || !"Professor".equalsIgnoreCase(usuarioBanco.getTipo())) {
+        redirectAttributes.addFlashAttribute("erro", "O usuário selecionado não é do tipo Professor.");
+        return "redirect:/professor/novo";
+    }
+
+    professor.setUsuario(usuarioBanco);
+    professorRepository.save(professor);
+
+    redirectAttributes.addFlashAttribute("sucesso", "Professor cadastrado com sucesso!");
+    return "redirect:/professor/listar";
+}
 
     @GetMapping("professor/listar")
     public String listarProfessores(Model model) {

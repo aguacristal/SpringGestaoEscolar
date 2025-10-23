@@ -8,41 +8,35 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "notas")
-public class Nota {
+ @Entity
+  @Table(name = "notas")
+  public class Nota {
+      @Id
+      @GeneratedValue(strategy = GenerationType.IDENTITY)
+      private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+      @ManyToOne // Relação com Aluno
+      @JoinColumn(name = "aluno_id", nullable = false) // Coluna FK no banco
+      private Aluno aluno; // Agora é um objeto Aluno, não String
 
-    @Column(nullable = false)
-    private String aluno;
+      private LocalDate data;
+      private String materia;
 
-    @Column(nullable = false)
-    private LocalDate data;
-
-    @Column(nullable = false)
-    private String materia;
-
-    @Column(nullable = false)
-    private Double nota;
-
+      private Double nota;
     public Nota() {}
 
-    public Nota(String aluno, LocalDate data, String materia, Double nota) {
-        this.aluno = aluno;
-        this.data = data;
-        this.materia = materia;
-        this.nota = nota;
-    }
-
+      public Nota(Aluno aluno, LocalDate data, String materia, Double nota) {
+          this.aluno = aluno;
+          this.data = data;
+          this.materia = materia;
+          this.nota = nota;
+      }
     // Getters e setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getAluno() { return aluno; }
-    public void setAluno(String aluno) { this.aluno = aluno; }
+    public Aluno getAluno() { return aluno; }
+    public void setAluno(Aluno aluno) { this.aluno = aluno; }
 
     public LocalDate getData() { return data; }
     public void setData(LocalDate data) { this.data = data; }

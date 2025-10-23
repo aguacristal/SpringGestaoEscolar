@@ -44,7 +44,7 @@
         </thead>
         <tbody>
           <tr th:each="n : ${notas}">
-            <td th:text="${n.aluno}"></td>
+            <td th:text="${n.aluno.nome}">[Nome do Aluno]</td>
             <td th:text="${#temporals.format(n.data, 'dd/MM/yyyy')}"></td>
             <td th:text="${n.materia}"></td>
             <td th:text="${n.nota}"></td>

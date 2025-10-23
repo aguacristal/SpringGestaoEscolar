@@ -22,7 +22,7 @@
     <tbody>
         <tr th:each="r : ${recuperacoes}">
             <td th:text="${r.id}"></td>
-            <td th:text="${r.aluno}"></td>
+            <td th:text="${r.aluno.nome}"></td>
             <td th:text="${r.materia}"></td>
             <td th:text="${r.nota}"></td>
             <td th:text="${r.data}"></td>

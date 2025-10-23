@@ -18,7 +18,7 @@
 
     <div class="form">
       <!-- Formulário agora envia requisição GET ao backend -->
-      <form id="formPesquisa" th:action="@{/usuarios/pesquisar}" method="get">
+      <form id="formPesquisa" th:action="@{/usuario/buscar}" method="get">
 
         <div>
           <label for="nome">Nome:</label>
@@ -35,10 +35,6 @@
           </select>
         </div>
 
-        <div>
-          <label for="Usuario">Usuário:</label>
-          <textarea id="Usuario" name="Usuario" rows="5" cols="40" readonly></textarea>
-        </div>
 
         <div class="btn">
           <button type="submit">Pesquisar</button>
@@ -49,27 +45,42 @@
     </div>
 
     <!-- Container para os resultados da pesquisa -->
-    <div id="resultados" th:if="${usuarios != null}">
-      <table class="resultado-table" th:if="${#lists.size(usuarios) > 0}">
-        <thead>
-          <tr><th>Nome</th><th>Tipo</th><th>Usuário</th><th>Ações</th></tr>
-        </thead>
-        <tbody>
-          <tr th:each="u : ${usuarios}">
-            <td th:text="${u.nome}"></td>
-            <td th:text="${u.tipo}"></td>
-            <td th:text="${u.usuario}"></td>
-            <td>
-              <button type="button" th:onclick="'alert(\'Nome: ' + ${u.nome} + '\nTipo: ' + ${u.tipo} + '\nUsuário: ' + ${u.usuario} + '\')'">Visualizar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<div id="resultados" th:if="${resultados != null}">
+  <table class="resultado-table" th:if="${#lists.size(resultados) > 0}"> 
+    <thead>
+      <tr><th>Nome</th><th>Tipo</th><th>Usuário</th><th>Ações</th></tr>
+    </thead>
+    <tbody>
+      <tr th:each="u : ${resultados}"> 
+        <td th:text="${u.nome}"></td>
+        <td th:text="${u.tipo}"></td>
+        <td th:text="${u.email}"></td>
+        <td>
+          <button type="button" th:onclick="visualizarUsuario('__${u.nome}__', 
+                    '__${u.tipo}__', 
+                    '__${u.email}__'
+                )">Visualizar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-      <p th:if="${#lists.size(usuarios) == 0}">Nenhum resultado encontrado.</p>
-    </div>
+  <p th:if="${#lists.size(resultados) == 0}">Nenhum resultado encontrado.</p> 
+</div>
 
   </div>
+    <script>
+    function visualizarUsuario(nome, tipo, email) {
+        // Agora podemos construir a string complexa, incluindo \n (quebra de linha),
+        // dentro do JavaScript, onde é permitido.
+        const mensagem = 
+            'Nome: ' + nome + 
+            '\nTipo: ' + tipo + 
+            '\nEmail: ' + email;
+            
+        alert(mensagem);
+    }
+</script>
 </body>
 </html>
 

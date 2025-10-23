@@ -12,12 +12,14 @@ public class Professor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer usuario;
+    @OneToOne
+    @JoinColumn(name = "usuario_id") 
+    private Usuario usuario;
     private String materia;
 
     public Professor() {}
 
-    public Professor(Integer usuario, String materia) {
+    public Professor(Usuario usuario, String materia) {
         this.usuario = usuario;
         this.materia = materia;
     }
@@ -25,8 +27,8 @@ public class Professor {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Integer getUsuario() { return usuario; }
-    public void setUsuario(Integer usuario) { this.usuario = usuario; }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
     public String getMateria() { return materia; }
     public void setMateria(String materia) { this.materia = materia; }

@@ -5,6 +5,7 @@
 package com.pi.GerenciamentoEscolar.Repository;
 
 import com.pi.GerenciamentoEscolar.Model.Aluno;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +13,5 @@ import org.springframework.stereotype.Repository;
 public interface AlunoRepository extends JpaRepository<Aluno, Long> {
 
     boolean existsByMatricula(String matricula);
+    List<Aluno> findByUsuario_Tipo(String tipo);
 }

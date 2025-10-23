@@ -11,8 +11,11 @@
     <h1>CADASTRO DE RECUPERAÇÃO</h1>
 
     <form th:action="@{/recuperacao/salvar}" th:object="${recuperacao}" method="post">
-        <label for="aluno">Aluno:</label>
-        <input type="text" id="aluno" th:field="*{aluno}" required>
+      <label for="aluno">Aluno:</label>
+<select id="aluno" th:field="*{aluno}" required> 
+  <option value="">Selecione um aluno</option>
+    <option th:each="a : ${alunos}" th:value="${a.id}" th:text="${a.usuario.nome}"></option>
+</select>
 
         <label for="data">Data:</label>
         <input type="date" id="data" th:field="*{data}" required>

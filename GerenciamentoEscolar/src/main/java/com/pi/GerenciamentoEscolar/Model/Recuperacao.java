@@ -13,15 +13,16 @@ public class Recuperacao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String aluno;
+    @ManyToOne // Relação com Aluno
+    @JoinColumn(name = "aluno_id", nullable = false)
+    private Aluno aluno;
     private String materia;
     private Double nota;
     private LocalDate data;
 
     public Recuperacao() {}
 
-    public Recuperacao(String aluno, String materia, Double nota, LocalDate data) {
+    public Recuperacao(Aluno aluno, String materia, Double nota, LocalDate data) {
         this.aluno = aluno;
         this.materia = materia;
         this.nota = nota;
@@ -32,8 +33,8 @@ public class Recuperacao {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getAluno() { return aluno; }
-    public void setAluno(String aluno) { this.aluno = aluno; }
+    public Aluno getAluno() { return aluno; }
+    public void setAluno(Aluno aluno) { this.aluno = aluno; }
 
     public String getMateria() { return materia; }
     public void setMateria(String materia) { this.materia = materia; }

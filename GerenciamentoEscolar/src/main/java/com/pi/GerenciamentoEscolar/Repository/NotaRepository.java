@@ -9,5 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface NotaRepository extends JpaRepository<Nota, Long> {
-    List<Nota> findByAlunoContainingIgnoreCase(String aluno);
+    // ✅ CORRETO: Navega do campo 'aluno' (em Nota) até a propriedade 'nome' (em Aluno)
+    List<Nota> findByAluno_Usuario_NomeContainingIgnoreCase(String nome); 
 }
